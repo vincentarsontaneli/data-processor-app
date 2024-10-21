@@ -1,0 +1,85 @@
+import pandas as pd
+import numpy as np
+from datetime import datetime
+import dateutil.parser
+from typing import Union
+import concurrent.futures
+import os
+
+def infer_date(value: str) -> Union[datetime, None]:
+    try:
+        return dateutil.parser.parse(value)
+    except:
+        return None
+
+def infer_column_type(column: pd.Series) -> str:
+    # Check for numeric type
+    if pd.api.types.is_numeric_dtype(column):
+        return str(column.dtype)
+    
+    # Check for boolean type
+    if set(column.unique()) <= {True, False, np.nan}:
+        return 'boolean'
+    
+    # Check for date type
+    if column.dtype == 'object':
+        sample = column.dropna().sample(min(len(column), 1000))
+        if all(infer_date(x) for x in sample):
+            return 'datetime64[ns]'
+    
+    # Check for categorical type
+    if column.nunique() / len(column) < 0.1:  # If less than 10% unique values
+        return 'category'
+    
+    return 'object'
+
+def convert_column_type(column: pd.Series, inferred_type: str) -> pd.Series:
+    if inferred_type == 'datetime64[ns]':
+        return pd.to_datetime(column, errors='coerce')
+    elif inferred_type == 'category':
+        return column.astype('category')
+    elif inferred_type == 'boolean':
+        return column.astype('boolean')
+    else:
+        return column.astype(inferred_type)
+
+def process_chunk(chunk: pd.DataFrame, dtypes: dict) -> pd.DataFrame:
+    for col, dtype in dtypes.items():
+        chunk[col] = convert_column_type(chunk[col], dtype)
+    return chunk
+
+def infer_and_convert_types(file_path: str, chunk_size: int = 100000) -> pd.DataFrame:
+    # Determine file type and read initial chunk
+    if file_path.endswith('.csv'):
+        initial_chunk = pd.read_csv(file_path, nrows=chunk_size)
+    elif file_path.endswith(('.xls', '.xlsx')):
+        initial_chunk = pd.read_excel(file_path, nrows=chunk_size)
+    else:
+        raise ValueError("Unsupported file type. Please use CSV or Excel files.")
+
+    # Infer column types
+    inferred_dtypes = {col: infer_column_type(initial_chunk[col]) for col in initial_chunk.columns}
+
+    # Process the file in chunks
+    chunks = []
+    if file_path.endswith('.csv'):
+        reader = pd.read_csv(file_path, chunksize=chunk_size)
+    else:  # Excel file
+        reader = pd.read_excel(file_path, chunksize=chunk_size)
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_chunk = {executor.submit(process_chunk, chunk, inferred_dtypes): chunk for chunk in reader}
+        for future in concurrent.futures.as_completed(future_to_chunk):
+            chunks.append(future.result())
+
+    # Combine chunks
+    df = pd.concat(chunks, ignore_index=True)
+
+    return df
+
+# Example usage
+if __name__ == "__main__":
+    file_path = "path/to/your/file.csv"  # or "path/to/your/file.xlsx"
+    result_df = infer_and_convert_types(file_path)
+    print(result_df.dtypes)
+    print(result_df.head())
