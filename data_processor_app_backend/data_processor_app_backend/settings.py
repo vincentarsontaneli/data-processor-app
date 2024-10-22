@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,8 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api',
+    'data_processor_app.apps.DataProcessorAppConfig',  
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -52,8 +56,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'data_processor_app_backend.urls'
-
-WSGI_APPLICATION = 'data_processor_app_backend.wsgi.application'
 
 TEMPLATES = [
     {
@@ -71,6 +73,7 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'data_processor_app_backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

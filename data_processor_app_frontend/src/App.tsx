@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { FileUploadCard } from "@/components/FileUploadCard";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface Metadata {
+  total_rows: number;
+  total_columns: number;
+  null_counts: number;
+  unique_counts: number;
+  memory_usage: number;
+  dtypes: Record<string, string>;
 }
 
-export default App
+
+function App() {
+
+  const [metadata, setMetadata] = useState<Metadata | null>(null);
+
+  return (
+    <div className="flex flex-col items-center justify-center bg-gradient-to-b from-blue-100 via-pink-50 h-full min-h-screen text-black">
+      <main className="px-40">
+        <section className="px-4 py-12 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
+            <div className="space-y-6">
+              <h1 className="bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl pb-2">
+                Transform Your Data into High-Quality Assets
+              </h1>
+              <p className="mx-auto text-xl text-gray-700 dark:text-gray-300">
+                Streamline your data transformation process and unlock its full
+                potential with simplicity and precision. Use our no-code platform to cut through the complexity and obtain analytics-ready datasets.
+              </p>
+              <p>Created By: Vincent Arson Taneli</p>
+            </div>
+            <div className="flex justify-center">
+              <FileUploadCard />
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+export default App;
