@@ -14,23 +14,36 @@ interface Metadata {
   dtypes: Record<string, string>;
 }
 
+const validFileTypes = [
+  'text/csv',  
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+];
+
 export const FileUploadCard: React.FC = () => {
   const uploadFileRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [metadata, setMetadata] = useState<Metadata | null>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setFile(event.target.files[0]);
+      const file = event.target.files[0];
+  
+      if (validFileTypes.includes(file.type)) {
+        setFile(file);
+        event.target.value = ""; 
+        toast.success("File uploaded successfully.");
+      } else {
+        toast.error("Please upload a CSV or Excel file.");
+      }
     }
   };
 
   const handleSubmit = async () => {
-    console.log("TEST");
     setMetadata(null);
 
     if (!file) {
-      toast("Please upload a file first.");
+      toast.error("Please upload a file first.");
       return;
     }
 
@@ -49,7 +62,7 @@ export const FileUploadCard: React.FC = () => {
       );
       setMetadata(response.data);
     } catch (err) {
-      toast("There was an error processing the file.");
+      toast.error("There was an error processing the file.");
     }
   };
 
@@ -68,7 +81,7 @@ export const FileUploadCard: React.FC = () => {
           type="file"
           className="hidden"
           accept=".csv, .xls, .xlsx"
-          onChange={handleFileChange}
+          onInput={handleUpload}
           ref={uploadFileRef}
         />
         <div className="flex gap-2">
@@ -83,8 +96,8 @@ export const FileUploadCard: React.FC = () => {
           <Button
             size="lg"
             variant="main"
-            onClick={() => handleSubmit()}
             disabled={!file}
+            onClick={() => handleSubmit()}
           >
             Process Data
           </Button>
@@ -92,9 +105,9 @@ export const FileUploadCard: React.FC = () => {
         {file && (
           <div className="flex justify-start gap-2 items-center">
             <p className="text-gray-700 dark:text-gray-300">
-              Selected file: <strong>{file.name}</strong>
+              Uploaded file: <strong>{file.name}</strong>
             </p>
-            <X className="hover:text-red-600" onClick={() => setFile(null)} />
+            <X className="hover:text-red-600 hover:cursor-pointer" onClick={() => setFile(null)} />
           </div>
         )}
         <p className="text-sm text-gray-500 dark:text-gray-400">
