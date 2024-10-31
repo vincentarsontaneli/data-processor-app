@@ -1,0 +1,51 @@
+id,name,date_column,numeric_column,numeric_column,bool_column,categorical_column,mixed_column
+1,Alice,1/1/2024,test,1234.56,TRUE,Category1,mixed1
+2,Bob,NotADate,98765,98765,FALSE,Category2,mixed2
+3,Charlie,,32r,10000,TRUE,Category1,at213
+4,,12/31/2025,-1234.56,-1234.56,YES,Category3,ATG21
+5,Eve,n/a,gsdfsfdsf,0.0005,no,Category1,NaN
+6,Fred,,0,0,N,,FALSE
+7,Ben,3/15/2023 12:30,99999,99999,Y,NoCategory,mixed7
+8,Rachel,1/1/2023,-9999,-9999,,Category4,text_only
+9,,12/31/2024 23:59,123,123,,Category3,mixed9
+10,Tim,,,,,Category3,ewr2r
+11,Timothy,1/1/2024,0.0005,0.0005,FALSE,,1234
+12,,1/1/2023,123,123,no,Category3,rewrw
+13,,,sadsad,99999,FALSE,Category3,NULL
+14,Steve,12/31/2025,123,123,no,Category3,NULL
+15,Seth,12/31/2024 23:59,asdavd,1234.56,FALSE,,FALSE
+16,Eve,1/1/2024,4234,-1234.56,,Category2,mixed1
+17,George,n/a,asdasd,-1234.56,,Category2,1234
+18,Hannah,,sdv,1234.56,FALSE,,mixed9
+19,,,123,123,,Category1,FALSE
+20,Charlie,NotADate,fdvfd,123,YES,Category2,mixed7
+21,,12/31/2025,bfdbd,-1234.56,YES,NoCategory,NaN
+22,George,,fdbdfb,-1234.56,YES,,NaN
+23,Eve,,,,,Category1,FALSE
+24,Terry,n/a,fdbdfb,,N,Category1,mixed7
+25,Lee,12/31/2025,-9999,-9999,N,NoCategory,r23rew
+26,Mark,n/a,sdvsd,123,TRUE,NoCategory,1234
+27,Hannah,3/15/2023 12:30,0,0,Y,Category4,NaN
+28,Eve,12/31/2024 23:59,32432423,99999,no,.Categorical.,FALSE
+29,Bob,,,,,Category2,FALSE
+30,Samantha,3/15/2023 12:30,sdcasca,10000,,Category2,text_only
+31,George,12/31/2025,98765,98765,,NoCategory,1234
+32,Steve,NotADate,1234.56,1234.56,N,Category2,FALSE
+33,Vanness,,523523,0,TRUE,,NaN
+34,Lany,12/31/2025,98765,98765,Y,,1234
+35,Bruno,NotADate,,,FALSE,Category3,1234
+36,,,99999,99999,no,NoCategory,mixed1
+37,Kim,,10000,10000,,Category4,NULL
+38,,NotADate,23423,1234.56,Y,CAT,1234
+39,Randy,12/31/2024 23:59,99999,99999,TRUE,,
+40,Dave,1/1/2024,4324,-1234.56,N,,A
+41,Edward,3/15/2023 12:30,98765,98765,no,Category1,QWEQW
+42,Alice,3/15/2023 12:30,0,0,,Category1,ASFS
+43,,1/1/2023,32423,99999,TRUE,Category3,text_only
+44,Aaron,12/31/2024 23:59,99999,99999,N,NoCategory,NaN
+45,Charlie,3/15/2023 12:30,2342,0.0005,,Category2,AFDSAFA
+46,Buzz,,0.0005,0.0005,Y,Category4,text_only
+47,Sam,12/31/2024 23:59,54353,-1234.56,,Category2,DSFSFSD
+48,Charlie,,0.0005,0.0005,YES,Category4,mixed1
+49,Woody,,,,,,D21E12
+50,,1/1/2024,543,10000,no,CAT,FALSE

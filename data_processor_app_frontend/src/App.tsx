@@ -17,7 +17,7 @@ function App() {
     <div className="flex flex-col items-center justify-center bg-gradient-to-b px-40 from-blue-200 via-pink-50 to-pink-200 min-h-screen text-black">
       <main className="space-y-12 w-[85%]">
         <section className="min-h-screen flex items-center">
-          <div className="grid grid-cols-1 gap-12 xl:grid-cols-2">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
             <div className="space-y-6">
               <h1 className="bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl md:text-6xl pb-2">
                 Transform Your Data into High-Quality Assets
@@ -44,7 +44,7 @@ function App() {
               Result
             </h2>
             <p className="mb-8">Preview of first 10 rows of the cleaned dataset</p>
-            <div className="w-[90%] max-w-[90rem] h-96 overflow-auto">
+            <div className="w-[90%] max-w-[90rem]">
               <DataTablePreview dtypes={data.dtypes} head={data.head} />
             </div>
           </section>

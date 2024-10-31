@@ -7,21 +7,19 @@ export const dataTypeMapping: { [key: string]: string } = {
     'datetime': 'Date/Time',
     'string': 'Text',
     'numerical': 'Number',
-    'complex': 'Complex Number',
     'percentage': 'Percentage',
   };
 
 
   export const conversionRules: { [key: string]: string[] } = {
-    'Integer': ['Integer', 'Decimal', 'Boolean', 'Alphanumeric', 'Number', 'Complex Number'],
-    'Decimal': ['Integer', 'Decimal', 'Boolean', 'Alphanumeric', 'Number', 'Complex Number'],
-    'Boolean': ['Integer', 'Decimal', 'Boolean', 'Alphanumeric', 'Number'],
-    'Alphanumeric': ['Alphanumeric', 'Text'],
+    'Integer': ['Integer', 'Decimal', 'Boolean', 'Alphanumeric', 'Number'],
+    'Decimal': ['Decimal', 'Boolean', 'Alphanumeric', 'Number'],
+    'Boolean': ['Boolean', 'Alphanumeric'],
+    'Alphanumeric': ['Alphanumeric'],
     'Category': ['Category', 'Alphanumeric', 'Text'],
     'Date/Time': ['Date/Time', 'Alphanumeric', 'Text'],
     'Time Duration': ['Time Duration', 'Alphanumeric', 'Text'],
     'Text': ['Text', 'Alphanumeric', 'Category'],
-    'Number': ['Number', 'Integer', 'Decimal', 'Boolean', 'Alphanumeric', 'Complex Number'],
-    'Complex Number': ['Complex Number', 'Alphanumeric', 'Text'],
+    'Number': ['Number', 'Integer', 'Decimal', 'Boolean', 'Alphanumeric'],
     'Percentage': ['Percentage', 'Integer', 'Decimal', 'Boolean', 'Alphanumeric', 'Number'],
   };

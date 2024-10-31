@@ -3,7 +3,7 @@ import numpy as np
 from dateutil import parser
 import re
 
-def infer_and_convert_types(df: pd.DataFrame, sample_size: int = 20000) -> tuple[pd.DataFrame, dict]:
+def infer_and_convert_types(df: pd.DataFrame, sample_size: int = 500000) -> tuple[pd.DataFrame, dict]:
     """
     Infer and convert column types in a DataFrame.
     Samples 20000 rows for performance on large datasets.
@@ -24,7 +24,7 @@ def infer_and_convert_types(df: pd.DataFrame, sample_size: int = 20000) -> tuple
     for column in df.columns:
         print(f"Processing column: {column}")
         # Get non-null sample values
-        sample_values = df[column].replace(['NaN', 'nan', 'NULL', 'None'], np.nan).dropna().astype(str)
+        sample_values = sample_df[column].replace(['NaN', 'nan', 'NULL', 'None'], np.nan).dropna().astype(str)
 
         if len(sample_values) == 0:
             type_summary[column] = 'unknown'

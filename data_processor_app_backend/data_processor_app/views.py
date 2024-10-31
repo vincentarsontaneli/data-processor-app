@@ -44,7 +44,7 @@ class ProcessDataView(APIView):
             print(type_summary)
             return Response({
                 'dtypes': type_summary,
-                'head': df_preview.head(20).to_dict(orient='records')
+                'head': df_preview.head(10).to_dict(orient='records')
             })
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
