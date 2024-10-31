@@ -14,29 +14,37 @@ import time
 class ProcessDataView(APIView):
 
     def clean_for_json(self, df):
-        return df.replace([np.inf, -np.inf, np.nan], None).copy()
+        # Clean DataFrame to ensure JSON compatibility
+        df_clean = df.replace({
+            np.inf: np.nan,
+            -np.inf: np.nan,
+            np.nan: None
+        })
+        return df_clean
     
     def post(self, request):
         if 'file' not in request.FILES:
             return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
 
         file = request.FILES['file']
-        
-        # Validate file type
-        if not file.name.endswith('.csv'):
-            return Response({'error': 'Only CSV files are allowed'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if the file extension is supported
+        if not file.name.endswith(('.csv', '.xls', '.xlsx')):
+            return Response({'error': 'Only CSV, XLS, and XLSX files are allowed'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            df = pd.read_csv(file)
-            
+            if file.name.endswith('.csv'):
+                df = pd.read_csv(file)
+            else:  # .xls or .xlsx
+                df = pd.read_excel(file)
             df_inferred, type_summary = infer_and_convert_types(df)
             df_preview = self.clean_for_json(df_inferred)
 
             print(type_summary)
-            time.sleep(2)
             return Response({
-            'dtypes': type_summary, 
-            'head': df_preview.head(10).to_dict(orient='records')
+                'dtypes': type_summary,
+                'head': df_preview.head(20).to_dict(orient='records')
             })
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

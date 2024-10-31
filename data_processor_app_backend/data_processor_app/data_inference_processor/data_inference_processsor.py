@@ -15,64 +15,28 @@ def infer_and_convert_types(df: pd.DataFrame, sample_size: int = 20000) -> tuple
     Returns:
         tuple: (converted DataFrame, dictionary of column types)
     """
-    df = df.copy()
     
     # Sample the dataframe for faster type inference
     sample_df = df.sample(n=min(sample_size, len(df))) if len(df) > sample_size else df
-    
-    for column in df.columns:
 
+    type_summary = {}
+
+    for column in df.columns:
         print(f"Processing column: {column}")
-        # Skip columns that are already properly typed
-        if df[column].dtype != 'object':
-            continue
-            
         # Get non-null sample values
-        sample_values = sample_df[column].dropna().astype(str)
+        sample_values = df[column].replace(['NaN', 'nan', 'NULL', 'None'], np.nan).dropna().astype(str)
+
         if len(sample_values) == 0:
+            type_summary[column] = 'unknown'
             continue
 
         try:
             # Clean the values of common artifacts
             cleaned_values = sample_values.str.strip().str.upper()
-            
-            # Test for boolean
-            bool_map = {
-                'TRUE': True, 'FALSE': False, 
-                'YES': True, 'NO': False,
-                'Y': True, 'N': False,
-                '1': True, '0': False,
-                'T': True, 'F': False
-            }
-            if cleaned_values.isin(bool_map.keys()).all():
-                df[column] = df[column].str.strip().str.upper().map(bool_map).astype(bool)
-                continue
-
-            # Test for percentage
-            if sample_values.str.contains('%').any():
-                print("PERCENTAGE")
-                df[column] = df[column].str.rstrip('%').str.replace(',', '').astype(float) / 100
-                continue
-
-            # Test for complex numbers
-            if sample_values.str.contains(r'[+-][0-9.]*[ji]').any():
-                df[column] = df[column].apply(lambda x: complex(str(x).replace(' ', '')) if pd.notna(x) else None).astype(complex)
-                continue
-
-            # Test for numeric with flexible pattern
-            numeric_pattern = r'^[-+]?\d*\.?\d+$'
-            if (sample_values.str.replace(',', '').str.match(numeric_pattern)).all():
-                print("NUMERIC")
-                df[column] = pd.to_numeric(df[column].str.replace(',', ''), errors='coerce')
-                # Convert to Int64 if all values are integers
-                if (df[column] % 1 == 0).all():
-                    print("INTEGER")
-                    df[column] = df[column].astype('Int64')
-                continue
 
             # Test for dates
             date_success = 0
-            test_values = sample_values[:min(10, len(sample_values))]
+            test_values = cleaned_values[:min(10, len(cleaned_values))]
             for value in test_values:
                 try:
                     # Skip obvious non-dates
@@ -82,29 +46,51 @@ def infer_and_convert_types(df: pd.DataFrame, sample_size: int = 20000) -> tuple
                     date_success += 1
                 except:
                     continue
-                    
+
             if date_success >= min(5, len(test_values)):
-                df[column] = pd.to_datetime(df[column], errors='coerce')
+                type_summary[column] = 'datetime'
                 continue
 
-            # Test for mixed IDs (alphanumeric with special characters)
-            if sample_values.str.match(r'^[A-Za-z0-9\-_\.]+$').all():
-                df[column] = df[column].astype(str).replace('None', np.nan)
+            # Test for numeric with flexible pattern
+            numeric_pattern = r'^[-+]?\d*\.?\d+$'
+            if (cleaned_values.str.replace(',', '').str.match(numeric_pattern)).all():
+                # Convert to float temporarily for check
+                cleaned_values = pd.to_numeric(cleaned_values, errors='coerce')
+                if (cleaned_values % 1 == 0).all():
+                    type_summary[column] = 'integer'
+                else:
+                    type_summary[column] = 'float'
                 continue
 
-            # Test for categorical
-            unique_ratio = len(sample_values.unique()) / len(sample_values)
-            if unique_ratio < 0.6:  # If less than 60% unique values
-                df[column] = df[column].astype('category')
+            # Test for boolean
+            bool_map = {
+                'TRUE': True, 'FALSE': False,
+                'YES': True, 'NO': False,
+                'Y': True, 'N': False,
+                '1': True, '0': False,
+                'T': True, 'F': False
+            }
+            if cleaned_values.isin(bool_map.keys()).all():
+                type_summary[column] = 'boolean'
                 continue
+
+            # Test for categorical - IT IS RECOMMENDED TO USE A LARGE DATASET
+            unique_ratio = len(cleaned_values.unique()) / len(cleaned_values)
+            print(unique_ratio)
+            if unique_ratio < 0.3:  # If less than 20% unique values
+                print("CATEGORY")
+                type_summary[column] = 'category'
+                continue
+
+            # Test for text without numbers
+            if cleaned_values.str.match(r'^[A-Za-z\-_\.]+$').all():
+                type_summary[column] = 'string'
+                continue
+
+            # Default to object if no other type matched
+            type_summary[column] = 'object'
 
         except Exception as e:
             continue  # Keep as object type if conversion fails
 
-    # Generate summary of conversions
-    type_summary = {
-        col: str(df[col].dtype) 
-        for col in df.columns
-    }
-    
     return df, type_summary
