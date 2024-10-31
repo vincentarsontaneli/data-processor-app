@@ -1,16 +1,14 @@
 export const dataTypeMapping: { [key: string]: string } = {
-    'int64': 'Integer',
-    'int32': 'Integer',
-    'float64': 'Decimal',
-    'float32': 'Decimal',
-    'bool': 'Boolean',
+    'integer': 'Integer',
+    'float': 'Decimal',
+    'boolean': 'Boolean',
     'object': 'Alphanumeric',
     'category': 'Category',
-    'datetime64[ns]': 'Date/Time',
-    'timedelta[ns]': 'Time Duration',
+    'datetime': 'Date/Time',
     'string': 'Text',
     'numerical': 'Number',
     'complex': 'Complex Number',
+    'percentage': 'Percentage',
   };
 
 
@@ -25,4 +23,5 @@ export const dataTypeMapping: { [key: string]: string } = {
     'Text': ['Text', 'Alphanumeric', 'Category'],
     'Number': ['Number', 'Integer', 'Decimal', 'Boolean', 'Alphanumeric', 'Complex Number'],
     'Complex Number': ['Complex Number', 'Alphanumeric', 'Text'],
+    'Percentage': ['Percentage', 'Integer', 'Decimal', 'Boolean', 'Alphanumeric', 'Number'],
   };
