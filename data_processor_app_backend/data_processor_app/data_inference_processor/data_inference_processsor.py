@@ -76,9 +76,7 @@ def infer_and_convert_types(df: pd.DataFrame, sample_size: int = 500000) -> tupl
 
             # Test for categorical - IT IS RECOMMENDED TO USE A LARGE DATASET
             unique_ratio = len(cleaned_values.unique()) / len(cleaned_values)
-            print(unique_ratio)
             if unique_ratio < 0.3:  # If less than 20% unique values
-                print("CATEGORY")
                 type_summary[column] = 'category'
                 continue
 
